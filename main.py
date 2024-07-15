@@ -1,19 +1,26 @@
-# This is a sample Python script.
+import pandas as pd
+import matplotlib
+import csv
+from datetime import datetime
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+# set up a class with multiple methods to make working with CSV file easy
+from pandas import DataFrame
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+class CSV:
+    # class variable since it is used only w/in class
+    CSV_FILE = 'finance_data.csv'
 
-f
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
-def hello() -> object:
-    print('hello')
+    # decorator to give access to class itself - not instance
+    @classmethod
+    # initialize the csv file
+    def initialize_csv(cls):
+        try:
+            pd.read_csv(cls.CSV_FILE)
+        except FileNotFoundError:
+            df: DataFrame = pd.DataFrame(columns=['date', 'amount', 'category', 'description'])
+            df.to_csv(cls.CSV_FILE, index=False)
+
+
+# Test:
+CSV.initialize_csv()
