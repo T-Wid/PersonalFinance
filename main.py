@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib
 import csv
 from datetime import datetime
+from data_entry import get_date, get_amount, get_description, get_category
 
 # set up a class with multiple methods to make working with CSV file easy
 from pandas import DataFrame
@@ -36,3 +37,7 @@ class CSV:
         with open(cls.CSV_FILE, 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=cls.COLUMNS)
             writer.writerow(new_entry)
+        print("Entry added successfully.")
+
+CSV.initialize_csv()
+CSV.add_entry(c)
