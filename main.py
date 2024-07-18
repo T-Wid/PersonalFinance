@@ -12,6 +12,7 @@ class CSV:
     # class variable since it is used only w/in class
     CSV_FILE = 'finance_data.csv'
     COLUMNS = ['date', 'amount', 'category', 'description']
+    FORMAT = '%d-%m-%Y'
 
     # decorator to give access to class itself - not instance
     @classmethod
@@ -43,12 +44,12 @@ class CSV:
     @classmethod
     def get_transactions(cls, start_date, end_date):
         df = pd.read_csv(cls.CSV_FILE)
-        df['date'] = pd.to_datetime(df['date'], format=CSV.date_format)
-        start_date = datetime.strptime(start_date, CSV.date_format)
-        end_date = datetime.strptime(end_date, CSV.date_format)
+        df['date'] = pd.to_datetime(df['date'], format=CSV.FORMAT)
+        start_date = datetime.strptime(start_date, CSV.FORMAT)
+        end_date = datetime.strptime(end_date, CSV.FORMAT)
 
         # bitwise &, needed when using pandas df and mask rather than 'AND'
-        mask = (df['date'] >= start_date & (df['date'] <= end_date))
+        mask = (df['date'] >= start_date) & (df['date'] <= end_date)
 
         # using loc to find matches with the criteria of mask
         filtered_df = df.loc[mask]
@@ -56,8 +57,8 @@ class CSV:
         if filtered_df.empty:
             print('No transactions were found in the given timeframe.')
         else:
-            print(f'Transactions from {start_date.strftime(CSV.date_format)}) to {end_date.strftime(CSV.date_format)}')
-            print(filtered_df.to_string(index=False, formatter={'date': lambda x: x.strftime(CSV.date_format)}))
+            print(f'Transactions from {start_date.strftime(CSV.FORMAT)}) to {end_date.strftime(CSV.FORMAT)}')
+            print(filtered_df.to_string(index=False, formatters={'date': lambda x: x.strftime(CSV.FORMAT)}))
             total_income = filtered_df[filtered_df['category'] == 'Income']['amount'].sum()
             total_expense = filtered_df[filtered_df['category'] == 'Expense']['amount'].sum()
             print('\nSummary')
@@ -66,7 +67,6 @@ class CSV:
             print(f'Net Earnings: ${(total_income - total_expense):.2f}')
 
         return filtered_df
-
 
 
 def add():
@@ -79,4 +79,5 @@ def add():
     CSV.add_entry(date, amount, category, description)
 
 
+CSV.get_transactions("01-01-2023", "18-07-2024")
 add()
